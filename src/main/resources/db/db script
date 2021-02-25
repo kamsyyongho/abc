@@ -1,0 +1,231 @@
+-- 테이블 순서는 관계를 고려하여 한 번에 실행해도 에러가 발생하지 않게 정렬되었습니다.
+use iamdb;
+-- doss_company_info Table Create SQL
+CREATE TABLE doss_company_info
+(
+    `company_cd`    VARCHAR(65)     NOT NULL    COMMENT '회사코드', 
+    `company_name`  VARCHAR(100)    NOT NULL    COMMENT '회사명', 
+    `upd_date`      DATETIME        NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`      DATETIME        NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (company_cd)
+);
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE iam_user_info
+(
+    `doss_id`           VARCHAR(20)     NOT NULL    COMMENT 'doss 아이디', 
+    `user_type`         VARCHAR(3)      NULL        COMMENT '사용자 타입', 
+    `skt_emp_no`        VARCHAR(20)     NULL        COMMENT 'skt 사번', 
+    `phonoe_no`         VARCHAR(50)     NULL        COMMENT '휴대폰번호', 
+    `email`             VARCHAR(50)     NULL        COMMENT '이메일', 
+    `last_login_dt`     DATETIME        NULL        COMMENT '마지막 로그인 날짜', 
+    `signup_dt`         DATETIME        NULL        COMMENT '회원가입 날짜', 
+    `company_cd`        VARCHAR(65)     NULL        COMMENT '회사 코드', 
+    `portal_role_id`    VARCHAR(1)      NULL        COMMENT '포털 권한', 
+    `lock_yn`           CHAR(1)         NULL        COMMENT '휴면여부', 
+    `ident_check_yn`    CHAR(1)         NULL        COMMENT '본인인증 확인 여부', 
+    `ident_check_date`  DATETIME        NULL        COMMENT '마지막 본인인증 시간', 
+    `upd_date`          DATETIME        NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`          DATETIME        NULL        COMMENT '데이터 생성 일자',
+    'birth_dt'
+    `company_nm`        VARCHAR(100)    NULL        COMMENT '회사명', 
+    PRIMARY KEY (doss_id)
+);
+
+ALTER TABLE iam_user_info COMMENT '사용자 기본 정보';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE iam_tool_auth_rule
+(
+    `role_id`     VARCHAR(45)    NOT NULL    COMMENT '권한 아이디', 
+    `role_name`   VARCHAR(45)    NOT NULL    COMMENT '권한 명', 
+    `portal`      VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `crowd`       VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `jira`        VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `confluence`  VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `bitbucket`   VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `jenkins`     VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `sonarqube`   VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `nexus`       VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `spinnaker`   VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `use_yn`      CHAR(1)        NULL        COMMENT '활성화 여부', 
+    `upd_date`    DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`    DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (role_id)
+);
+
+ALTER TABLE iam_tool_auth_rule COMMENT 'role 별 툴체인 권한';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE doss_project_info
+(
+    `proj_id`       VARCHAR(45)    NOT NULL    COMMENT '프로젝트 식별 id', 
+    `project_name`  VARCHAR(45)    NOT NULL    COMMENT '프로젝트명', 
+    `description`   VARCHAR(45)    NULL        COMMENT '프로젝트 설명', 
+    `start_date`    DATETIME       NULL        COMMENT '프로젝트 시작일', 
+    `end_date`      DATETIME       NULL        COMMENT '프로젝트 종료 예정일', 
+    `reg_id`        VARCHAR(45)    NULL        COMMENT '프로젝트 등록자 id', 
+    `upd_id`        VARCHAR(45)    NULL        COMMENT '프로젝트 수정자 id', 
+    `pms_type`      VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `proj_status`   VARCHAR(45)    NULL        COMMENT '공통코드', 
+    `upd_date`      DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`      DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (proj_id)
+);
+
+ALTER TABLE doss_project_info COMMENT '프로젝트 정보';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE comm_code_group
+(
+    `code_group_id`  VARCHAR(45)    NOT NULL    COMMENT '코드 그룹 id', 
+    `code_group_nm`  VARCHAR(45)    NOT NULL    COMMENT '코드 그룹명', 
+    `upd_date`       DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`       DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (code_group_id)
+);
+
+ALTER TABLE comm_code_group COMMENT '공통코드';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE doss_group_info
+(
+    `group_id`    VARCHAR(45)    NOT NULL    COMMENT '그룹 id', 
+    `group_name`  VARCHAR(45)    NOT NULL    COMMENT 'ex) SKT 직원, 팀 이름', 
+    `ㄴ`           DATETIME       NULL        COMMENT '그루핑 시작일자', 
+    `end_date`    DATETIME       NULL        COMMENT '그루핑 종료일자', 
+    `upd_date`    DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`    DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (group_id)
+);
+
+ALTER TABLE doss_group_info COMMENT '그룹 정보';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE iam_asis_user_mapping
+(
+    `doss_id`     VARCHAR(20)     NOT NULL    COMMENT 'doss 아이디', 
+    `asis_id`     VARCHAR(50)     NOT NULL    COMMENT '기존 아이디', 
+    `asis_pwd`    VARCHAR(100)    NOT NULL    COMMENT '기존 패스워드', 
+    `system_div`  VARCHAR(3)      NULL        COMMENT '공통코드 (01 : TDE, 02: IT devops)', 
+    `lock_yn`     CHAR(1)         NULL        COMMENT '휴면여부', 
+    `use_yn`      CHAR(1)         NULL        COMMENT '활성화 여부', 
+    `upd_date`    DATETIME        NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`    DATETIME        NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (doss_id)
+);
+
+ALTER TABLE iam_asis_user_mapping COMMENT '마이그 대상 테이블';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE iam_user_credential_record
+(
+    `doss_id`   VARCHAR(20)     NOT NULL    COMMENT 'doss 아이디', 
+    `ci`        VARCHAR(100)    NOT NULL    COMMENT '본인 식별값', 
+    `pwd_hash`  VARCHAR(100)    NOT NULL    COMMENT '비밀번호', 
+    `upd_date`  DATETIME        NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`  DATETIME        NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (doss_id)
+);
+
+ALTER TABLE iam_user_credential_record COMMENT '사용자';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE doss_project_member_auth
+(
+    `project_id`  VARCHAR(45)    NOT NULL    COMMENT '프로젝트 식별 id', 
+    `doss_id`     VARCHAR(45)    NOT NULL    COMMENT 'doss 아이디', 
+    `role_id`     VARCHAR(45)    NOT NULL    COMMENT '권한 아이디', 
+    `upd_date`    DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`    DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (project_id, doss_id, role_id)
+);
+
+ALTER TABLE doss_project_member_auth COMMENT '프로젝트 사용자 권한 맵핑';
+
+-- doss_company_info Table Create SQL
+CREATE TABLE doss_group_member_auth
+(
+    `group_id`  VARCHAR(45)    NOT NULL    COMMENT '그룹 식별 id', 
+    `doss_id`   VARCHAR(45)    NOT NULL    COMMENT 'doss 아이디', 
+    `role_id`   VARCHAR(45)    NOT NULL    COMMENT '권한 아이디', 
+    `upd_date`  DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`  DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (group_id, doss_id, role_id)
+);
+
+ALTER TABLE doss_group_member_auth COMMENT '그룹 사용자 권한 맵핑';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE iam_user_login_hist
+(
+    `seq`              INT            NOT NULL    AUTO_INCREMENT COMMENT '시퀀스', 
+    `doss_id`          VARCHAR(45)    NULL        COMMENT 'doss 아이디', 
+    `login_date`       VARCHAR(45)    NULL        COMMENT '로그인 시간', 
+    `login_conn_code`  VARCHAR(45)    NULL        COMMENT '로그인 방식', 
+    `upd_date`         DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`         DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (seq)
+);
+
+ALTER TABLE iam_user_login_hist COMMENT '로그인 이력 테이블';
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE comm_code
+(
+    `code_group_id`  VARCHAR(45)    NOT NULL    COMMENT '코드 그룹 id', 
+    `code_id`        VARCHAR(45)    NULL        COMMENT '코드 id', 
+    `code_nm`        VARCHAR(45)    NULL        COMMENT '코드명', 
+    `use_yn`         VARCHAR(45)    NULL        COMMENT '사용여부', 
+    `upd_date`       DATETIME       NULL        COMMENT '데이터 수정 일자', 
+    `reg_date`       DATETIME       NULL        COMMENT '데이터 생성 일자', 
+    PRIMARY KEY (code_group_id, code_id)
+);
+
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE doss_id_seq
+(
+    `doss_id_seq`  INT    NOT NULL    AUTO_INCREMENT COMMENT 'seq', 
+    PRIMARY KEY (doss_id_seq)
+);
+
+
+-- doss_company_info Table Create SQL
+CREATE TABLE INF_PERSON_INFO_RCV
+(
+    `EMPNO`         VARCHAR(45)    NOT NULL    COMMENT '사원 번호', 
+    `HNAME`         VARCHAR(45)    NULL        COMMENT '한글 이름', 
+    `INDEPT`        VARCHAR(45)    NULL        COMMENT '소속 부서 코드', 
+    `DEPTNM`        VARCHAR(45)    NULL        COMMENT '소속 부서 명', 
+    `SOSOK`         VARCHAR(45)    NULL        COMMENT '소속', 
+    `TSOSOK`        VARCHAR(45)    NULL        COMMENT '토탈 소속', 
+    `JBRANK`        VARCHAR(45)    NULL        COMMENT '직위 코드', 
+    `JBRANKNM`      VARCHAR(45)    NULL        COMMENT '직위 명', 
+    `JBCHARGE`      VARCHAR(45)    NULL        COMMENT '직책 코드', 
+    `INTELNO`       VARCHAR(45)    NULL        COMMENT '사내 전화 번호', 
+    `MOVETELNO`     VARCHAR(45)    NULL        COMMENT '이동 전화 번호', 
+    `EMAIL`         VARCHAR(45)    NULL        COMMENT '이메일', 
+    `USER_TYPE`     VARCHAR(45)    NULL        COMMENT '사용자 구분', 
+    `HOLDOFFIDIVI`  VARCHAR(45)    NULL        COMMENT '재직 구분', 
+    `SENDDT`        DATETIME       NULL        COMMENT '전송 일자', 
+    `T_FLAG`        VARCHAR(45)    NULL        COMMENT '사용 구분', 
+    `ENAME`         VARCHAR(45)    NULL        COMMENT '영문 이름', 
+    `JBCHARGENM`    VARCHAR(45)    NULL        COMMENT '직책 명', 
+    PRIMARY KEY (EMPNO)
+);
+
+ALTER TABLE INF_PERSON_INFO_RCV COMMENT 'ilm 연동 테이블';
+
+

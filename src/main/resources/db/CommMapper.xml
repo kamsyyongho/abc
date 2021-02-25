@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skt.doss.portal.common.core.mapper.CommMapper">
+    <select id="searchCommCodeList" parameterType="String" resultType="CommCodeResponseVo">
+		select 
+			b.code_group_nm
+			,a.code_group_id
+			,a.code_id
+			,a.code_nm
+			,a.use_yn
+			,a.upd_date
+			,a.reg_date
+		from comm_code a
+		,comm_code_group b
+		where a.code_group_id = #{codeGroupId}
+		and   a.code_group_id = b.code_group_id
+    </select>
+    
+    <select id="searchCommCodeAllList" resultType="CommCodeResponseVo">
+		select 
+			b.code_group_nm
+			,a.code_group_id
+			,a.code_id
+			,a.code_nm
+			,a.use_yn
+			,a.upd_date
+			,a.reg_date
+		from comm_code a
+		,comm_code_group b
+		where   a.code_group_id = b.code_group_id
+    </select>   
+    
+    <select id="searchCommGroupCodeList" resultType="Map">
+		select 
+			code_group_id
+			,code_group_nm
+			,upd_date
+			,reg_date
+		from comm_code_group;
+    </select>   
+    <select id="searchCompanyList" resultType="CompanyResponseVo">    
+	    select
+			company_cd
+			,company_name
+			,upd_date
+			,reg_date
+		from doss_company_info     
+	</select>
+	
+	<select id="searchCompanyInfo" parameterType="String" resultType="CompanyResponseVo">
+		select 
+			company_cd
+			,company_name
+			,upd_date
+			,reg_date
+		from doss_company_info
+		where company_name like CONCAT('%',#{companyName},'%')
+	</select>
+    
+</mapper>

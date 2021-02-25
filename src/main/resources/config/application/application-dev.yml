@@ -1,0 +1,58 @@
+spring:
+  #####################[Maria DB]#################################
+  #datasource:
+  # driver-class-name: org.mariadb.jdbc.Driver
+  # username: dossAdmin@iam-dev-db
+  # password: dossIAM!
+  # url: jdbc:mariadb://iam-dev-db.mariadb.database.azure.com:3306/iamDB
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: dossPortal@azure-mariadb-doss-prd.mariadb.database.azure.com
+    password: sktDoss2021!
+    url: jdbc:mariadb://100.64.69.24:3306/portal
+    dbcp2:
+      validation-query: select 1
+      test-on-borrow: true
+  #  jackson:
+  #    serialization:
+  #      fail-on-empty-beans: false
+  #redis:
+  #  host: doss-dev-redis.redis.cache.windows.net
+  #  port: 6379
+  #  password: evxw17YsHxCjFFgqmB5rFXGjCH6F5UUmwHKWAownR64=
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#      show-sql: true
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLDialect
+#        format_sql: true
+#    open-in-view: false
+#global variable
+##### fido #####
+fido.appId: https://fido.sktelecom.com:9031/tdeappid
+fido.targetUrl: https://fido.sktelecom.com:9031
+fido.accesskey: 89115bf539e3953b5fa368243d0add95845db6a49ab590936a4c28d3d374a2e5
+
+opentracing:
+  jaeger:
+    http-sender:
+      url: http://jaeger-collector.istio-system:14268/api/traces
+    enable-b3-propagation: true
+feign:
+  doss-crowd-api:
+    url: https://doss.sktelecom.com/crowd/
+crowd:
+  application:
+    username: api_dossportal
+    password: test
+    
+ldap:
+  initail-context-factory: com.sun.jndi.ldap.LdapCtxFactory
+  provider-url: ldap://doss-openldap:389
+  security-authentication: simple
+  security-principal: cn=admin,dc=example,dc=org
+  security-credentials: admin
+logging:
+  config: classpath:config/log/logback-dev.xml

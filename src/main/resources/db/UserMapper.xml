@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skt.doss.portal.user.core.mapper.UserMapper">
+    <select id="searchUserInfo"  parameterType="String" resultType="UserResponseVo">
+		select  
+			a.doss_id
+			,a.user_type
+			,(select code_nm from comm_code where code_id = a.user_type) as user_type_nm
+			,a.company_cd
+			,a.company_nm
+			,a.portal_role_id
+			,a.dept_nm
+			,a.user_nm
+		from iam_user_info a
+		where doss_id = #{dossId}
+    </select>
+
+    <select id="checkExistingUser" resultType="Map">
+		select NVL(max('Y'),'N') as is_id_yn
+		from iam_user_info 
+		WHERE  case when #{user_type} = 'A' then doss_id = #{user_id} else id_ci = #{id_ci} end
+    </select> 
+     
+    <select id="selectNextDossSeq" resultType="String">
+	    select
+			lpad(convert(substr(MAX(doss_id_seq),1,6) , unsigned ) + 1 ,6 , 0) as doss_id_seq
+		from doss_id_seq  
+	</select>	
+    
+    <update id="makeDossId">
+		update doss_id_seq
+		set
+		doss_id_seq = (select max(doss_id_seq) + 1 from doss_id_seq)	   
+	</update>	
+	
+    <select id="selectIlmUserInfo" resultType="Map">
+		 select 
+			empno
+			,hname
+			,indept
+			,deptnm
+			,user_type
+		from INF_PERSON_INFO_RCV 
+		where EMPNO = #{empno}   
+	</select>   
+ 
+    <select id="selectDossUserInfo" resultType="Map">
+		select
+			doss_id
+			,user_type
+			,skt_emp_no
+		from iam_user_info
+		where doss_id = #{doss_id}
+	</select> 
+	
+	<insert id="insertUserInfo" parameterType="UserRequestVo">
+		insert into iam_user_info(
+		    doss_id,           
+		    user_type,         
+		    skt_emp_no ,       
+		    phone_no,         
+		    email,             
+		    last_login_dt,      
+		    signup_dt,         
+		    company_cd ,    
+		    company_nm,   
+		    portal_role_id  , 
+		    lock_yn,           
+		    ident_check_yn,    
+		    ident_check_date,   
+		    upd_date,          
+		    reg_date ,
+		    birth_dt,
+		    user_nm,
+		    dept_nm
+	    )
+	    values(
+		    #{dossId} 	
+		    ,#{userType}	
+		    ,#{sktEmpNo}	
+		    ,#{phoneNo}	
+		    ,#{email}	
+		    ,null	
+		    ,sysdate()	
+		    ,#{companyCd}	
+		    ,#{companyNm}
+		    ,#{portalRoleId}	
+		    ,#{lockYn}	
+		    ,#{identCheckYn}	
+		    ,#{identCheckDate}
+		    ,sysdate()
+		    ,sysdate()
+		    ,#{birthDt}
+		    ,#{userNm}
+		    ,#{deptNm}
+		    
+	    )
+	</insert>	     
+	
+    <insert id="insertUserCred" parameterType="UserRequestVo">
+    	insert into iam_user_credential_record(doss_id , ci , pwd_hash , upd_date , reg_date)
+			values(
+			 #{dossId}
+			,#{ci}
+			,#{pwd}
+			,sysdate()
+			,sysdate()
+			)
+    </insert>
+ 
+    <select id="searchUserAuth" resultType="UserAuthResponseVo" parameterType="String">
+		select
+			A.project_id
+			,A.doss_id
+			,A.role_id
+			,B.role_name
+			,B.role_explain
+			,B.prj_range
+			,B.portal
+			,B.crowd
+			,B.jira
+			,B.confluence
+			,B.bitbucket
+			,B.jenkins
+			,B.sonarqube
+			,B.nexus
+			,B.spinnaker
+			,B.use_yn
+			,C.project_name
+			,C.description
+			,C.start_date
+			,C.end_date
+			,C.reg_id
+			,C.upd_id
+			,C.pms_type
+			,C.proj_status
+		from doss_project_member_auth A
+		,iam_tool_auth_rule B
+		,doss_project_info C
+		WHERE A.DOSS_ID = #{dossId}
+		AND   A.ROLE_ID = B.ROLE_ID
+		AND   A.PROJECT_ID = C.PROJ_ID 
+	</select>  
+	
+	<update id="updUserInfo" parameterType="UserRequestVo">
+		update iam_user_info
+		set
+			skt_emp_no = #{sktEmpNo}
+			,phone_no = #{phoneNo}
+			,email = #{email}
+			,company_cd = #{companyCd}
+			,company_nm = #{companyNm}
+			,dept_nm = #{deptNm}
+			,upd_date = sysdate()
+		where doss_id = #{dossId}
+	</update> 
+
+    <select id="checkDossUser" parameterType="UserRequestVo" resultType="UserResponseVo">
+    	select 
+			NVL(MAX('Y'),'N') AS doss_user_yn
+		from iam_user_credential_record
+		where doss_id = #{dossId}
+		and   pwd_hash = #{pwd}
+    </select>	
+  
+    <update id="userCertiStatusChange" parameterType="UserRequestVo"> 
+	  	update iam_user_info
+		set
+		ident_check_yn = #{identCheckYn}
+		,ident_check_date = sysdate()
+		,upd_date = sysdate()
+		where doss_id = #{dossId}
+	</update>	
+	
+	<select id="checkUserCertiStatus" parameterType="String" resultType="UserResponseVo">
+		select
+			nvl(MAX(DOSS_ID),'N') as doss_id
+			,nvl(MAX(ident_check_yn),'N') as ident_check_yn
+		from iam_user_info
+		where doss_id = #{dossId}
+    </select>	
+    
+    <update id="updateDossSeq" parameterType="Map">
+    	update doss_id_seq
+    	set
+    	doss_id_seq = #{doss_id_seq}
+    </update>
+    
+    <insert id="insertUserLoginHst" parameterType="UserRequestVo">
+		insert into iam_user_login_hist(doss_id , login_date , login_conn_code , upd_date , reg_date)
+		values(#{dossId},sysdate() , #{loginConnCode} , sysdate() , sysdate())    
+    </insert>
+    
+    <select id="certiAsisUser" parameterType="UserRequestVo" resultType="UserResponseVo">
+    	select
+			nvl(max('Y'),'N') asis_user_yn
+			,nvl(max(doss_id),'N') doss_id
+		from iam_asis_user_mapping
+		where asis_id = #{asisId}
+		and asis_pwd = #{pwd}
+    and use_yn = 'Y'
+    </select>
+    
+    <select id="getSktMemberInfo" parameterType="String" resultType="UserResponseVo">
+	    select 
+			EMPNO 
+			,HNAME
+			,ENAME
+			,REGNO
+			,INDEPT
+			,DEPTNM as dept_nm
+			,SOSOK
+			,TSOSOK
+			,REGNO as birth_Dt 
+			,MOVETELNO
+			,EMAIL
+		from inf_person_info_rcv
+		where empno = #{empno}
+    </select>
+    
+  <update id="expireAsisUser" parameterType="UserRequestVo">
+    update iam_asis_user_mapping
+    set use_yn = 'N'
+    where asis_id = #{asisId}  
+  </update>
+  
+  <select id="searchIlmUpdateUser" parameterType="String" resultType="UserResponseVo">
+	  select
+		a.empno 
+		,a.hname
+		,a.ename
+		,a.INDEPT
+		,a.SOSOK
+		,a.TSOSOK
+		,a.JBGRPNM
+		,a.INTELNO
+		,a.MOVETELNO
+		,a.TELNO
+		,a.EMAIL
+		,a.USER_TYPE
+		,a.SENDDT
+		from inf_person_info_rcv a
+		where date_format(sysdate(),'%Y%m%d') = date_format(senddt,'%Y%m%d') 
+	</select>	
+</mapper>

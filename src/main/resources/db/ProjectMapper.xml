@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skt.doss.portal.project.core.mapper.ProjectMapper">
+    
+    <resultMap id="myProjectMap" type="com.skt.doss.portal.project.core.object.query.MyProjectResponseVo">
+    	<id property="projId" column="proj_id" />
+    	<result property="projectName" column="project_name" />
+    	<result property="startDate" column="start_date" />
+    	<result property="endDate" column="end_date" />
+    	<result property="pmsType" column="pms_type" />
+    	<result property="projStatus" column="proj_status" />
+    	<result property="projStatusNm" column="proj_status_name" />
+    	<result property="prjMstCompNm" column="company_nm" />
+    	<result property="prjMstUserNm" column="user_nm" />
+    	<collection property="roleList" javaType="java.util.ArrayList" resultMap="myProjectRoleMap" />
+    </resultMap>
+    
+    <resultMap id="myProjectRoleMap" type="com.skt.doss.portal.project.core.object.query.MyProjectResponseVo$Role">
+    	<id property="roleId" column="role_id" />
+    	<result property="roleName" column="role_name" />
+    	<result property="portal" column="portal" />
+    	<result property="crowd" column="crowd" />
+    	<result property="jira" column="jira" />
+    	<result property="confluence" column="confluence" />
+    	<result property="bitbucket" column="bitbucket" />
+    	<result property="jenkins" column="jenkins" />
+    	<result property="sonarqube" column="sonarqube" />
+    	<result property="nexus" column="nexus" />
+    	<result property="spinnaker" column="spinnaker" />
+    </resultMap>
+    
+	<select id="selectMyProjectList" parameterType="java.lang.String" resultMap="myProjectMap">
+	
+		select dpi.proj_id
+			 , dpi.project_name
+			 , date_format(dpi.start_date, '%Y.%m.%d') start_date
+			 , date_format(dpi.end_date, '%Y.%m.%d') end_date
+			 , (select code_nm from comm_code where code_group_id = 'PMS_TYPE' and code_id = dpi.pms_type) pms_type
+			 , dpi.proj_status
+			 , (select code_nm from comm_code where code_group_id = 'PROJ_STATUS' and code_id = dpi.proj_status) proj_status_name
+			 , iui.company_nm
+			 , iui.user_nm
+			 , dpma.role_id
+			 , itar.role_name
+			 , itar.portal
+			 , itar.crowd
+			 , itar.jira
+			 , itar.confluence
+			 , itar.bitbucket
+			 , itar.jenkins
+			 , itar.sonarqube
+			 , itar.nexus
+			 , itar.spinnaker
+			 
+		  from doss_project_info dpi
+			 , doss_project_member_auth dpma 
+			 , iam_tool_auth_rule itar
+			 , iam_user_info iui
+			 
+		 where dpi.proj_id = dpma.project_id
+		   and dpma.role_id = itar.role_id
+		   and dpi.prj_master_id = iui.doss_id
+	 	   and dpma.doss_id = #{dossId}
+	 	   and itar.use_yn = 'Y'
+	 	   
+	 	 order by dpi.proj_status, dpi.start_date
+	 	   
+    </select>
+    
+    <select id="selectProjectUserList" parameterType="java.lang.String" resultType="com.skt.doss.portal.project.core.object.query.ProjectUserResponseVo">
+    
+		select iui.user_nm
+			 , iui.company_nm
+			 , iui.dept_nm
+			 , itar.role_name
+			 , itar.portal
+			 , itar.crowd
+			 , itar.jira
+			 , itar.confluence
+			 , itar.bitbucket
+			 , itar.jenkins
+			 , itar.sonarqube
+			 , itar.nexus
+			 
+		  from doss_project_member_auth dpma
+		     , iam_user_info iui
+		     , iam_tool_auth_rule itar
+		     
+		 where dpma.doss_id = iui.doss_id
+		   and dpma.role_id = itar.role_id
+		   and dpma.project_id = #{projectId}
+		   
+		 order by dpma.reg_date desc
+		 
+    </select>
+    
+</mapper>
